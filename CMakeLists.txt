@@ -12,9 +12,6 @@ project(OSM_A_star_search)
 # Set library output path to /lib
 set(LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/lib")
 
-# Set IO2D path
-# set(io2d_DIR "/home/carl/Packages/P0267_RefImpl/Debug/P0267_RefImpl/P0267_RefImpl/CMakeFiles/Export/lib/cmake/io2d")
-
 # Locate project prerequisites
 find_package(io2d REQUIRED)
 find_package(Cairo)
