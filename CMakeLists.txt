@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.11.3)
+#cmake_minimum_required(VERSION 3.11.3)
+cmake_minimum_required(VERSION 3.10.2)
 
 # Set the C++ standard we will use
 set(CMAKE_CXX_STANDARD 17)
@@ -10,6 +11,9 @@ project(OSM_A_star_search)
 
 # Set library output path to /lib
 set(LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/lib")
+
+# Set IO2D path
+# set(io2d_DIR "/home/carl/Packages/P0267_RefImpl/Debug/P0267_RefImpl/P0267_RefImpl/CMakeFiles/Export/lib/cmake/io2d")
 
 # Locate project prerequisites
 find_package(io2d REQUIRED)
@@ -33,9 +37,9 @@ target_link_libraries(OSM_A_star_search
 )
 
 # Add the testing executable
-add_executable(test test/utest_rp_a_star_search.cpp src/route_planner.cpp src/model.cpp src/route_model.cpp)
+add_executable(tests tests/utest_rp_a_star_search.cpp src/route_planner.cpp src/model.cpp src/route_model.cpp)
 
-target_link_libraries(test 
+target_link_libraries(tests 
     gtest_main 
     pugixml
 )
