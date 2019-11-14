@@ -3,6 +3,8 @@
 *.o
 draw.cpp
 test.cpp
+Debug/
 build/
 bin/
 lib/
+.vscode/
