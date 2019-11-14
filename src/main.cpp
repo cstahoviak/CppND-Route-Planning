@@ -24,7 +24,7 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
 
     if( contents.empty() )
         return std::nullopt;
-    return std::move(contents);
+    return std::move(contents);     // move does not require pointers or references to copy data
 }
 
 int main(int argc, const char **argv)
@@ -56,16 +56,26 @@ int main(int argc, const char **argv)
     // user input for these values using std::cin. Pass the user input to the
     // RoutePlanner object below in place of 10, 10, 90, 90.
 
-    // Build Model.
+    // std::vector<std::string> coord_str {"start_x", "start_y", "end_x", "end_y"};
+    // std::vector<float> coords[types.size()];
+    // for( int i = 0; i < types.size(); i++ ) {
+    //     cout << "Enter " << coord_str[i] << ": ";
+    //     std::cin >> coords[i];
+    // }
+    // std::vector<int> init(coords.begin(), coords.begin()+2);
+    // std::vector<int> goal(coords.begin()+3, coords.begin()+4);
+
+    // Build Model - create RouteModel object
     RouteModel model{osm_data};
 
     // Create RoutePlanner object and perform A* search.
     RoutePlanner route_planner{model, 10, 10, 90, 90};
+    // RoutePlanner route_planner{model, init[0], init[1], goal[0], goal[1]};
     route_planner.AStarSearch();
 
     std::cout << "Distance: " << route_planner.GetDistance() << " meters. \n";
 
-    // Render results of search.
+    // create Render object and render results of search.
     Render render{model};
 
     auto display = io2d::output_surface{400, 400, io2d::format::argb32, io2d::scaling::none, io2d::refresh_style::fixed, 30};

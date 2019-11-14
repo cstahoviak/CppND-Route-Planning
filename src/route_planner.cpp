@@ -1,6 +1,7 @@
 #include "route_planner.h"
 #include <algorithm>
 
+// this is the RoutePlanner class "constructor"
 RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, float end_x, float end_y): m_Model(model) {
     // Convert inputs to percentage:
     start_x *= 0.01;
@@ -57,11 +58,16 @@ RouteModel::Node *RoutePlanner::NextNode() {
 //   of the vector, the end node should be the last element.
 
 std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node *current_node) {
+    // NOTE: current_node should be final node in search
+
     // Create path_found vector
     distance = 0.0f;
     std::vector<RouteModel::Node> path_found;
 
     // TODO: Implement your solution here.
+    // 1. iterate through the parents of each node to construct complete path (path_found)
+    // 2. at each iteration push parent node onto back of path_found and increment distance
+    // 3. At the end, path_found will be in the reverse order, so it will need to be reversed
 
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     return path_found;

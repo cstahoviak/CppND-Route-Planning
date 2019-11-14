@@ -1,11 +1,13 @@
 #include "route_model.h"
 #include <iostream>
 
+// definition of RouteModel class contructor - calls Model contructor with xml map data
 RouteModel::RouteModel(const std::vector<std::byte> &xml) : Model(xml) {
     // Create RouteModel nodes.
     int counter = 0;
+    // create RouteModel nodes for each node in Model and store in m_nodes vector
     for (Model::Node node : this->Nodes()) {
-        m_Nodes.emplace_back(Node(counter, this, node));
+        m_Nodes.emplace_back(Node(counter, this, node));    // could have used push_back()
         counter++;
     }
     CreateNodeToRoadHashmap();
