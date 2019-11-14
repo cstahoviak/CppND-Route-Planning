@@ -64,15 +64,15 @@ int main(int argc, const char **argv)
         std::cin >> num;
         coords.push_back(num);
     }
-    // std::vector<int> init(coords.begin(), coords.begin()+2);
-    // std::vector<int> goal(coords.begin()+3, coords.begin()+4);
+    std::vector<float> init{coords[0], coords[1]};
+    std::vector<float> goal{coords[2], coords[3]};
 
     // Build Model - create RouteModel object
     RouteModel model{osm_data};
 
     // Create RoutePlanner object and perform A* search.
-    RoutePlanner route_planner{model, 10, 10, 90, 90};
-    // RoutePlanner route_planner{model, init[0], init[1], goal[0], goal[1]};
+    // RoutePlanner route_planner{model, 10, 10, 90, 90};
+    RoutePlanner route_planner{model, init[0], init[1], goal[0], goal[1]};
     route_planner.AStarSearch();
 
     std::cout << "Distance: " << route_planner.GetDistance() << " meters. \n";
