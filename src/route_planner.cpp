@@ -14,18 +14,20 @@ RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, floa
     RouteModel::Node end_node = m_Model.FindClosestNode(end_x, end_y);
 
     // Store the nodes you find in the RoutePlanner's start_node and end_node attributes.
-    // I'm passing a reference to start_node which is stored as a ptr to the start node... maybe??
+    // Q: Passing a reference to start_node which is stored as a ptr to the start node... maybe??
     this->start_node = &start_node;
     this->end_node = &end_node;
 }
 
-
-// TODO 3: Implement the CalculateHValue method.
-// Tips:
-// - You can use the distance to the end_node for the h value.
-// - Node objects have a distance method to determine the distance to another node.
-
 float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
+    // TODO 3: Implement the CalculateHValue method.
+    // Tips:
+    // - You can use the distance to the end_node for the h value.
+    // - Node objects have a distance method to determine the distance to another node.
+
+    // dereference the pointer end_node to pass the "node" itself to distance()
+    return node->distance(*end_node);
+    // return (*node).distance(*end_node);
 
 }
 
