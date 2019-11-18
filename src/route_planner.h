@@ -20,6 +20,9 @@ class RoutePlanner {
     std::vector<RouteModel::Node> ConstructFinalPath(RouteModel::Node *);
     RouteModel::Node *NextNode();
 
+    // added my own compare function
+    bool CompareNodes(const RouteModel::Node *node1, const RouteModel::Node *node2);
+
   private:
     // Add private variables or methods declarations here.
     std::vector<RouteModel::Node*> open_list;   // vector of node pointers
