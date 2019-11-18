@@ -13,8 +13,8 @@ RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, floa
     // Store the nodes you find in the RoutePlanner's start_node and end_node attributes.
 
     /* NOTE: According to the declaration of RouteModel::FindClosestNode(), it returns
-    * a reference to a Model::Node onject. This reference is assigned to start_node 
-    * and end_node.
+    * a reference to a RouteModel::Node onject. This reference is assigned to
+    * start_node and end_node.
     */
     start_node = &m_Model.FindClosestNode(start_x, start_y);
     end_node = &m_Model.FindClosestNode(end_x, end_y);
@@ -105,16 +105,33 @@ RouteModel::Node *RoutePlanner::NextNode() {
 //   of the vector, the end node should be the last element.
 
 std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node *current_node) {
-    // NOTE: current_node should be final node in search
+    // NOTE: current_node should be final node in search (end_node)
 
     // Create path_found vector
     distance = 0.0f;
-    std::vector<RouteModel::Node> path_found;
+    std::vector<RouteModel::Node> path_found {};
 
     // TODO: Implement your solution here.
     // 1. iterate through the parents of each node to construct complete path (path_found)
     // 2. at each iteration push parent node onto back of path_found and increment distance
     // 3. At the end, path_found will be in the reverse order, so it will need to be reversed
+
+    // add current_node (end_node) to path_found
+    path_found.push_back( *(current_node) );
+
+    while( current_node->parent != nullptr ) {
+
+        // add parent node to path_found vector
+        path_found.push_back( *(current_node->parent) );
+        
+        // increment distance by the distance from the current node to its parent node
+        distance += current_node->distance( *(current_node->parent) );
+
+        current_node = current_node->parent;
+    }
+
+    // reverse the nodes in the path
+    std::reverse(path_found.begin(), path_found.end());
 
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     return path_found;
