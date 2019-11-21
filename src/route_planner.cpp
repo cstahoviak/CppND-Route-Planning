@@ -50,20 +50,22 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
     current_node->FindNeighbors();
 
     for( RouteModel::Node *neighbor : current_node->neighbors ) {
-        // set the parent node to the current node
-        neighbor->parent = current_node;
+        if( !(neighbor->visited) ) {
+            // set the parent node to the current node
+            neighbor->parent = current_node;
 
-        // get h-value
-        neighbor->h_value = CalculateHValue( neighbor );
+            // get h-value
+            neighbor->h_value = CalculateHValue( neighbor );
 
-        // get g-value - distance from start node to neighbor node
-        neighbor->g_value = neighbor->distance( *start_node );
+            // get g-value - distance from start node to neighbor node
+            neighbor->g_value = neighbor->distance( *start_node );
 
-        // set neighbor node's visited attibute to true
-        neighbor->visited = true;
+            // set neighbor node's visited attibute to true
+            neighbor->visited = true;
 
-        // add neighbor node to open list
-        open_list.push_back( neighbor );
+            // add neighbor node to open list
+            open_list.push_back( neighbor );
+        }
     }
 }
 
@@ -82,10 +84,6 @@ bool CompareNodes(const RouteModel::Node *node1, const RouteModel::Node *node2) 
 }
 
 RouteModel::Node *RoutePlanner::NextNode() {
-
-    // create ptr to open_list (shouldn't be necessary)
-    // std::vector<RouteModel::Node*> *open_list_ptr = &open_list;
-    // std::sort(open_list_ptr->begin(), open_list_ptr->end(), CompareNodes);
 
     // sort the open_list
     std::sort(open_list.begin(), open_list.end(), CompareNodes);
@@ -158,8 +156,14 @@ void RoutePlanner::AStarSearch() {
     // TODO: Implement your solution here.
     std::cout << "Start AStarSearch()\n";
 
+    // set distance threshold for A-Star convergence
+    float x_dist     = 0.0f;
+    float y_dist     = 0.0f;
+    float dist       = 0.0f;
+    float dist_thres = 0.01;    // will need to tune this value
+
     // initialize the vector of open nodes
-    std::vector<RouteModel::Node*> open_list {};
+    open_list = {};
 
     // set current_node ptr to start_node ptr
     RouteModel::Node *current_node = start_node;
@@ -170,32 +174,47 @@ void RoutePlanner::AStarSearch() {
     current_node->visited = true;
     open_list.push_back( current_node );
 
-    // for( RouteModel::Node *node : open_list ) {
-    //     std::cout << &node << "\n";
-    // }
+    for( RouteModel::Node *node : open_list ) {
+        std::cout << "start_node:\t" << &node << "\t" << 
+            node->g_value + node->h_value << "\n";
+    }
 
+    int iter = 0;
     while(open_list.size() > 0) {
 
-        // add neighbors of current_node to open_list
-        AddNeighbors( current_node );
-
-        // std::cout << "AStarSearch() open_list:\n";
-        // for( RouteModel::Node *node : open_list ) {
-        //     std::cout << &node << "\n";
-        // }
+        std::cout << "\niteration:\t" << iter << "\n";
 
         RouteModel::Node* current_node = NextNode();
 
-        float x_thres = current_node->x - end_node->x;
-        float y_thres = current_node->y - end_node->y;
+        std::cout << "current_node:\t" << &current_node << "\t" << 
+            current_node->g_value + current_node->h_value << "\n";
 
-        std::cout << x_thres << "\t" << y_thres << "\n";
+        std::cout << "open_list (sorted):\n";
+        for( RouteModel::Node *node : open_list ) {
+            std::cout << "\t" << &node << "\t" << node->g_value + node->h_value << "\n";
+        }
 
-        if( current_node->x == end_node->x && current_node->y == end_node->y ) {
+        x_dist = current_node->x - end_node->x;
+        y_dist = current_node->y - end_node->y;
+        dist   = std::sqrt(std::pow(x_dist,2) + std::pow(y_dist,2));
+
+        // std::cout << x_dist << "\t" << y_dist << "\t" << dist << "\n";
+
+        if( dist < dist_thres ) {
             // std::vector<RouteModel::Node> path = ConstructFinalPath( current_node);
             m_Model.path = ConstructFinalPath( current_node);
             return;
         }
+        else {
+            // add neighbors of current_node to open_list
+            AddNeighbors( current_node );
+
+            std::cout << "open_list:\n";
+            for( RouteModel::Node *node : open_list ) {
+                std::cout << "\t" << &node << "\t" << node->g_value + node->h_value << "\n";
+            }
+        }
+        iter++;
     }
 
     // We've run out of new nodes to explore and haven't found a path.
