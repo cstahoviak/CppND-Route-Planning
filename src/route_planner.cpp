@@ -184,6 +184,7 @@ void RoutePlanner::AStarSearch() {
 
         std::cout << "\niteration:\t" << iter << "\n";
 
+        //sort the open_list and return the next node
         RouteModel::Node* current_node = NextNode();
 
         std::cout << "current_node:\t" << &current_node << "\t" << 
