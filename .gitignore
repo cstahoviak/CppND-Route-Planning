@@ -7,4 +7,4 @@ Debug/
 build/
 bin/
 lib/
-# .vscode/
+.vscode/
