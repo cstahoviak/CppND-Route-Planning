@@ -69,17 +69,6 @@ int main(int argc, const char **argv)
             }
         } while ( num < 0.0f || num > 100 );
 
-        // if( num < 0.0f) {
-        //     std::cout << "coordinate values must be in [0,100]" << "\n";
-        //     std::cout << "setting " << coord_str[i] << " to 0" << "\n";
-        //     num = 0.0f;
-        // }
-        // else if( num > 100.0 ) {
-        //     std::cout << "coordinate values must be in [0,100]" << "\n";
-        //     std::cout << "setting " << coord_str[i] << " to 100" << "\n";
-        //     num = 100.0;
-        // }
-
         coords.push_back(num);
     }
     std::vector<float> init{coords[0], coords[1]};
