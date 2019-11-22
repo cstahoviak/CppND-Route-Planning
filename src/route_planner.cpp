@@ -154,10 +154,6 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 void RoutePlanner::AStarSearch() {
 
     // TODO: Implement your solution here.
-    std::cout << "Start AStarSearch()\n";
-
-    // set distance threshold for A-Star convergence
-    // float dist_thres = 0.001;    // will need to tune this value
 
     // initialize the vector of open nodes
     open_list = {};
@@ -171,44 +167,21 @@ void RoutePlanner::AStarSearch() {
     current_node->visited = true;
     open_list.push_back( current_node );
 
-    int iter = 0;
     while(open_list.size() > 0) {
-
-        // std::cout << "\niteration:\t" << iter << "\n";
-
         //sort the open_list and return the next node
         RouteModel::Node* current_node = NextNode();
 
-        // std::cout << "current_node:\t" << current_node << "\t" << 
-        //     current_node->g_value + current_node->h_value << "\n";
-
-        // std::cout << "open_list (sorted):\n";
-        // for( RouteModel::Node *node : open_list ) {
-        //     std::cout << "\t" << node << "\t" << node->g_value + node->h_value << "\n";
-        // }
-
-        // float dist = current_node->distance( *end_node );
-        // std::cout << "distance to end_node:\t" << dist << "\n";
-
-        if( current_node->distance( *end_node ) == 0 ) {
-            // std::vector<RouteModel::Node> path = ConstructFinalPath( current_node);
-            m_Model.path = ConstructFinalPath( current_node);
+        if( current_node->distance( *end_node ) == 0 ) {;
+            m_Model.path = ConstructFinalPath( current_node );
             return;
         }
         else {
             // add neighbors of current_node to open_list
             AddNeighbors( current_node );
-
-            // std::cout << "open_list:\n";
-            // for( RouteModel::Node *node : open_list ) {
-            //     std::cout << "\t" << node << "\t" << node->g_value + node->h_value << "\n";
-            // }
         }
-        iter++;
     }
 
     // We've run out of new nodes to explore and haven't found a path.
     std::cout << "No path found!" << "\n";
     return;
-
 }
