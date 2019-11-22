@@ -28,7 +28,7 @@ RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, floa
 float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
     // dereference the pointer end_node to pass the node object itself to distance()
     return node->distance(*end_node);
-    // return (*node).distance(*end_node);
+    // return (*node).distance(*end_node);      // another way to dereference
 }
 
 
@@ -175,7 +175,7 @@ void RoutePlanner::AStarSearch() {
     open_list.push_back( current_node );
 
     for( RouteModel::Node *node : open_list ) {
-        std::cout << "start_node:\t" << &node << "\t" << 
+        std::cout << "start_node:\t" << node << "\t" << 
             node->g_value + node->h_value << "\n";
     }
 
@@ -187,12 +187,12 @@ void RoutePlanner::AStarSearch() {
         //sort the open_list and return the next node
         RouteModel::Node* current_node = NextNode();
 
-        std::cout << "current_node:\t" << &current_node << "\t" << 
+        std::cout << "current_node:\t" << current_node << "\t" << 
             current_node->g_value + current_node->h_value << "\n";
 
         std::cout << "open_list (sorted):\n";
         for( RouteModel::Node *node : open_list ) {
-            std::cout << "\t" << &node << "\t" << node->g_value + node->h_value << "\n";
+            std::cout << "\t" << node << "\t" << node->g_value + node->h_value << "\n";
         }
 
         x_dist = current_node->x - end_node->x;
@@ -212,7 +212,7 @@ void RoutePlanner::AStarSearch() {
 
             std::cout << "open_list:\n";
             for( RouteModel::Node *node : open_list ) {
-                std::cout << "\t" << &node << "\t" << node->g_value + node->h_value << "\n";
+                std::cout << "\t" << node << "\t" << node->g_value + node->h_value << "\n";
             }
         }
         iter++;
