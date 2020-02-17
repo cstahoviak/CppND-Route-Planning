@@ -3,8 +3,9 @@
 #include <iostream>
 #include <optional>
 #include <vector>
-#include "../src/route_model.h"
-#include "../src/route_planner.h"
+
+#include "route_model.h"
+#include "route_planner.h"
 
 
 static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
