@@ -40,6 +40,10 @@ class RouteModel : public Model {
         bool visited = false;
         std::vector<Node *> neighbors;    // vector of node ptrs
 
+        // added for Dijkstra's implementation
+        double dist = std::numeric_limits<double>::infinity();
+        // Node* prev = nullptr;
+
         void FindNeighbors();             // used to populate the neighbors vector
         float distance(Node other) const {
             return std::sqrt(std::pow((x - other.x), 2) + std::pow((y - other.y), 2));
@@ -57,8 +61,8 @@ class RouteModel : public Model {
     };
 
     RouteModel(const std::vector<std::byte> &xml);
-    Node &FindClosestNode(float x, float y);
-    auto &SNodes() { return m_Nodes; }
+    Node& FindClosestNode(float x, float y);
+    std::vector<Node>& SNodes() { return m_Nodes; }
     std::vector<Node> path;     // stores final path from start node to end node
     
   private:

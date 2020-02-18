@@ -3,6 +3,9 @@
 
 // definition of RouteModel class contructor - calls Model contructor with xml map data
 RouteModel::RouteModel(const std::vector<std::byte> &xml) : Model(xml) {
+
+    // std::cout << "RouteModel Constructor" << std::endl;
+
     // Create RouteModel nodes.
     int counter = 0;
     // create RouteModel nodes for each node in Model and store in m_nodes vector
@@ -11,6 +14,32 @@ RouteModel::RouteModel(const std::vector<std::byte> &xml) : Model(xml) {
         counter++;
     }
     CreateNodeToRoadHashmap();
+
+    // below for Dijkstra's troubleshooting
+
+    // int max{5}, count{0};
+
+    // for( auto it = m_Nodes.cbegin(); it != m_Nodes.cend(); ++it ) {
+    //     std::cout << "\tNode (" << (*it).x << ", " << (*it).y << ")  \t" << &(*it) << "\n";
+    //     count++;
+
+    //     if( count > max ) break;
+    // }
+    // std::cout << "\n";
+
+    /* NOTE: In the for loop below, the same address will be printed at each loop
+    * iteration. Why? The address of the temporary (stack-allocated) variable "node"
+    * is printed rather than the actual address of the RouteModel::Node object
+    * within the m_Nodes vector as in the for loop above that is done via iteration.
+    */
+
+    // count = 0;
+    // for( auto node : m_Nodes ) {
+    //     std::cout << "\tNode (" << node.x << ", " << node.y << ")  \t" << &node << "\n";
+    //     count++;
+
+    //     if( count > max ) break;
+    // }
 }
 
 

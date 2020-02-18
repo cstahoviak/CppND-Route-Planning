@@ -14,6 +14,10 @@ class RoutePlanner {
     float GetDistance() const {return distance;}
     void AStarSearch();
 
+    // added Dijkstra's algorithm
+    void Dijkstra();
+    // std::vector<RouteModel::Node> ConstructFinalPath_Dijkstra(RouteModel::Node *);
+
     // The following methods have been made public so we can test them individually.
     void AddNeighbors(RouteModel::Node *current_node);
     float CalculateHValue(RouteModel::Node const *node);
@@ -21,7 +25,8 @@ class RoutePlanner {
     RouteModel::Node *NextNode();
 
     // added my own compare function
-    // static bool CompareNodes(const RouteModel::Node *node1, const RouteModel::Node *node2);
+    // bool CompareNodes(const RouteModel::Node *node1, const RouteModel::Node *node2);
+    // bool CompareNodes_Dijkstra(const RouteModel::Node *node1, const RouteModel::Node *node2);
 
   private:
     // Add private variables or methods declarations here.

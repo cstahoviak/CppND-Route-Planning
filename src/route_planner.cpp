@@ -1,5 +1,7 @@
 #include "route_planner.h"
 #include <algorithm>
+#include <queue>
+#include <functional>
 
 // this is the RoutePlanner class "constructor"
 RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, float end_x, float end_y): m_Model(model) {
@@ -169,9 +171,9 @@ void RoutePlanner::AStarSearch() {
 
     while(open_list.size() > 0) {
         //sort the open_list and return the next node
-        RouteModel::Node* current_node = NextNode();
+        current_node = NextNode();
 
-        if( current_node->distance( *end_node ) == 0 ) {;
+        if( current_node->distance( *end_node ) == 0 ) {
             m_Model.path = ConstructFinalPath( current_node );
             return;
         }
@@ -185,3 +187,121 @@ void RoutePlanner::AStarSearch() {
     std::cout << "No path found!" << "\n";
     return;
 }
+
+bool CompareNodes_Dijkstra(const RouteModel::Node *node1, const RouteModel::Node *node2) {
+    return node1->dist < node2->dist;
+}
+
+void RoutePlanner::Dijkstra() {
+
+    std::cout << "Djistra's Algorithm:" << std::endl;
+    std::cout << "start_node\t" << start_node << std::endl;
+
+    // create lambda function for priority queue comparison
+    auto compare =  [](RouteModel::Node* node1, RouteModel::Node* node2) {
+        return node1->dist > node2->dist;
+    };
+
+    // create priority queue of Nodes
+    std::priority_queue<RouteModel::Node*, std::vector<RouteModel::Node*>,
+        decltype(compare)> Q(compare);
+
+    // inititalization
+    start_node->dist = 0.0f;
+    start_node->visited = true;
+    Q.push( start_node );
+
+    // this declaration of the priority_queue isn't working
+    // std::priority_queue<RouteModel::Node, std::vector<RouteModel::Node>, 
+    //     std::function<bool(RouteModel::Node*, RouteModel::Node*)>> Q2(CompareNodes_Dijkstra);
+
+    /* NOTE: The problem with what I'm doing below is that I'm effectively
+    * creating a copy of every Node in RouteModel::m_Nodes, and adding each of them
+    * to the priority_queue. I want to use pointers to the Nodes in m_Nodes rather
+    * than creating copies of them.
+    * 
+    * UPDATE: I think I fixed it! - by using begin()/end() and NOT cbegin()/cend()
+    * in the iterator-based for loop below.
+    */
+
+    // add all Nodes to priority_queue
+    // for( auto it = m_Model.SNodes().begin(); it != m_Model.SNodes().end(); ++it ) {
+    //     Q.push( &(*it) );
+    // }
+
+    while( !Q.empty() ) {
+        // get Node off top of priority_queue
+        RouteModel::Node* current_node = Q.top();
+        std::cout << "\ntop node\t" << current_node << ",\tdist = " <<
+            current_node->dist << std::endl;
+
+        // mark current_node as 'visited' and remove from priority_queue
+        current_node->visited = true;
+        Q.pop();
+        
+        if( current_node->distance( *end_node ) == 0 ) {
+            m_Model.path = ConstructFinalPath( current_node );
+            return;
+        }
+        else {
+            // populate the current_node->neighbors vector
+            current_node->FindNeighbors();
+
+            for( RouteModel::Node* neighbor : current_node->neighbors ) {
+                if( !neighbor->visited ) {
+                    double dist = current_node->distance(*neighbor);
+                    // std::cout << "  neighbor " << neighbor << ", dist = " << std::to_string(dist) << std::endl;
+                    double alt = current_node->dist + current_node->distance( *neighbor );
+                    if( alt < neighbor->dist ) {
+                        neighbor->dist = alt;
+                        neighbor->parent = current_node;
+                    }
+
+                    // add neighbor to priority_queue
+                    Q.push( neighbor );
+                }
+                
+            }
+        }
+
+        // remove top Node (current_node) from priority_queue
+        // Q.pop();
+        
+    }
+
+    // We've run out of new nodes to explore and haven't found a path.
+    std::cout << "No path found!" << "\n";
+    return;
+}
+
+// std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath_Dijkstra(RouteModel::Node* current_node) {
+//     // NOTE: current_node should be final node in search (end_node)
+
+//     // Create path_found vector
+//     std::vector<RouteModel::Node> path_found {};
+
+//     // TODO: Implement your solution here.
+//     // 1. iterate through the parents of each node to construct complete path (path_found)
+//     // 2. at each iteration push parent node onto back of path_found and increment distance
+//     // 3. At the end, path_found will be in the reverse order, so it will need to be reversed
+
+//     // add current_node (end_node) to path_found
+//     path_found.push_back( *(current_node) );
+
+//     while( current_node->parent != nullptr ) {
+
+//         // add parent node to path_found vector
+//         path_found.push_back( *(current_node->parent) );
+        
+//         // increment distance by the distance from the current node to its parent node
+//         distance += current_node->distance( *(current_node->parent) );
+
+//         current_node = current_node->parent;
+//     }
+
+//     // reverse the order of nodes in the path
+//     std::reverse(path_found.begin(), path_found.end());
+
+//     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
+//     return path_found;
+// } 

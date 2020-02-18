@@ -66,7 +66,7 @@ int main(int argc, const char **argv)
             std::cin >> num;
 
             if( num < 0.0f || num > 100 ) {
-                std::cout << "coordinate values must be in [0,100]" << "\n";
+                std::cout << "coordinate values must be in [0,100]\n";
             }
         } while ( num < 0.0f || num > 100 );
 
@@ -81,9 +81,10 @@ int main(int argc, const char **argv)
     // Create RoutePlanner object and perform A* search.
     // RoutePlanner route_planner{model, 10, 10, 90, 90};
     RoutePlanner route_planner{model, init[0], init[1], goal[0], goal[1]};
-    route_planner.AStarSearch();
+    // route_planner.AStarSearch();
+    route_planner.Dijkstra();
 
-    std::cout << "Distance: " << route_planner.GetDistance() << " meters. \n";
+    std::cout << "Route Distance: " << route_planner.GetDistance() << " [m]\n";
 
     // create Render object and render results of search.
     Render render{model};
