@@ -83,8 +83,7 @@ int main(int argc, const char **argv)
     RoutePlanner route_planner{model, init[0], init[1], goal[0], goal[1]};
     // route_planner.AStarSearch();
     route_planner.Dijkstra();
-
-    std::cout << "Route Distance: " << route_planner.GetDistance() << " [m]\n";
+    std::cout << "Dijkstra Route Distance: " << route_planner.GetDistance() << " [m]\n";
 
     // create Render object and render results of search.
     Render render{model};

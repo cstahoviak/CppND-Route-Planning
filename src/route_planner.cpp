@@ -230,6 +230,7 @@ void RoutePlanner::Dijkstra() {
     // }
 
     while( !Q.empty() ) {
+
         // get Node off top of priority_queue
         RouteModel::Node* current_node = Q.top();
         std::cout << "\ntop node\t" << current_node << ",\tdist = " <<
@@ -248,24 +249,18 @@ void RoutePlanner::Dijkstra() {
             current_node->FindNeighbors();
 
             for( RouteModel::Node* neighbor : current_node->neighbors ) {
-                if( !neighbor->visited ) {
-                    double dist = current_node->distance(*neighbor);
-                    // std::cout << "  neighbor " << neighbor << ", dist = " << std::to_string(dist) << std::endl;
-                    double alt = current_node->dist + current_node->distance( *neighbor );
-                    if( alt < neighbor->dist ) {
-                        neighbor->dist = alt;
-                        neighbor->parent = current_node;
-                    }
+                double dist = current_node->distance( *neighbor );
+                std::cout << "  neighbor " << neighbor << ", dist = " << std::to_string(dist) << std::endl;
+                double alt = current_node->dist + current_node->distance( *neighbor );
+                if( alt < neighbor->dist ) {
+                    neighbor->dist = alt;
+                    neighbor->parent = current_node;
 
                     // add neighbor to priority_queue
                     Q.push( neighbor );
                 }
-                
             }
         }
-
-        // remove top Node (current_node) from priority_queue
-        // Q.pop();
         
     }
 
