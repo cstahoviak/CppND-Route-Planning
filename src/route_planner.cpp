@@ -194,9 +194,6 @@ bool CompareNodes_Dijkstra(const RouteModel::Node *node1, const RouteModel::Node
 
 void RoutePlanner::Dijkstra() {
 
-    std::cout << "Djistra's Algorithm:" << std::endl;
-    std::cout << "start_node\t" << start_node << std::endl;
-
     // create lambda function for priority queue comparison
     auto compare =  [](RouteModel::Node* node1, RouteModel::Node* node2) {
         return node1->dist > node2->dist;
@@ -208,12 +205,7 @@ void RoutePlanner::Dijkstra() {
 
     // inititalization
     start_node->dist = 0.0f;
-    start_node->visited = true;
     Q.push( start_node );
-
-    // this declaration of the priority_queue isn't working
-    // std::priority_queue<RouteModel::Node, std::vector<RouteModel::Node>, 
-    //     std::function<bool(RouteModel::Node*, RouteModel::Node*)>> Q2(CompareNodes_Dijkstra);
 
     /* NOTE: The problem with what I'm doing below is that I'm effectively
     * creating a copy of every Node in RouteModel::m_Nodes, and adding each of them
@@ -222,6 +214,8 @@ void RoutePlanner::Dijkstra() {
     * 
     * UPDATE: I think I fixed it! - by using begin()/end() and NOT cbegin()/cend()
     * in the iterator-based for loop below.
+    * 
+    * UPDATE (2): I'll only add the start node to the priority queue at init.
     */
 
     // add all Nodes to priority_queue
@@ -233,10 +227,6 @@ void RoutePlanner::Dijkstra() {
 
         // get Node off top of priority_queue
         RouteModel::Node* current_node = Q.top();
-        std::cout << "\ntop node\t" << current_node << ",\tdist = " <<
-            current_node->dist << std::endl;
-
-        // mark current_node as 'visited' and remove from priority_queue
         current_node->visited = true;
         Q.pop();
         
@@ -249,9 +239,8 @@ void RoutePlanner::Dijkstra() {
             current_node->FindNeighbors();
 
             for( RouteModel::Node* neighbor : current_node->neighbors ) {
-                double dist = current_node->distance( *neighbor );
-                std::cout << "  neighbor " << neighbor << ", dist = " << std::to_string(dist) << std::endl;
                 double alt = current_node->dist + current_node->distance( *neighbor );
+
                 if( alt < neighbor->dist ) {
                     neighbor->dist = alt;
                     neighbor->parent = current_node;

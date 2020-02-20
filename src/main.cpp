@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <chrono>
 #include <io2d.h>
 
 #include "route_model.h"
@@ -10,6 +11,7 @@
 #include "route_planner.h"
 
 using namespace std::experimental;
+using Duration = std::chrono::microseconds;
 
 static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
 {   
@@ -77,15 +79,39 @@ int main(int argc, const char **argv)
 
     // Build Model - create RouteModel object
     RouteModel model{osm_data};
+    RouteModel model_dijkstra{osm_data};
 
-    // Create RoutePlanner object and perform A* search.
-    // RoutePlanner route_planner{model, 10, 10, 90, 90};
+    // Create RoutePlanner object
     RoutePlanner route_planner{model, init[0], init[1], goal[0], goal[1]};
-    // route_planner.AStarSearch();
-    route_planner.Dijkstra();
-    std::cout << "Dijkstra Route Distance: " << route_planner.GetDistance() << " [m]\n";
+    RoutePlanner route_planner_dijkstra{model_dijkstra, init[0], init[1], goal[0], goal[1]};
 
-    // create Render object and render results of search.
+    std::vector<Duration> time;
+    std::vector<float> dist;
+
+    // perform Dijkstra search
+    auto start = std::chrono::high_resolution_clock::now();
+    route_planner_dijkstra.Dijkstra();
+    auto stop = std::chrono::high_resolution_clock::now();
+    
+    time.push_back(std::chrono::duration_cast<Duration>(stop - start));
+    dist.push_back(route_planner_dijkstra.GetDistance());
+
+    // perform A* search
+    start = std::chrono::high_resolution_clock::now();
+    route_planner.AStarSearch();
+    stop = std::chrono::high_resolution_clock::now();
+
+    time.push_back(std::chrono::duration_cast<Duration>(stop - start));
+    dist.push_back(route_planner.GetDistance());
+
+    // display results and relative algorithm performance 
+    std::cout << "\nDijkstra Route Distance:\t" << dist[0] << " [m]\n";
+    std::cout << "A* Route Distance:\t\t" << dist[1] << " [m]\n\n";
+
+    std::cout << "Dijkstra Execution Time:\t" << time[0].count() << " [us]\n";
+    std::cout << "A* Execution time:\t\t" << time[1].count() << " [us]\n";
+
+    // create Render object and render A* Search result.
     Render render{model};
 
     auto display = io2d::output_surface{400, 400, io2d::format::argb32, io2d::scaling::none, io2d::refresh_style::fixed, 30};
