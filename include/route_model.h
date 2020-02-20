@@ -42,7 +42,6 @@ class RouteModel : public Model {
 
         // added for Dijkstra's implementation
         double dist = std::numeric_limits<double>::infinity();
-        // Node* prev = nullptr;
 
         void FindNeighbors();             // used to populate the neighbors vector
         float distance(Node other) const {

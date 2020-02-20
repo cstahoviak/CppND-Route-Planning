@@ -227,7 +227,7 @@ void RoutePlanner::Dijkstra() {
 
         // get Node off top of priority_queue
         RouteModel::Node* current_node = Q.top();
-        current_node->visited = true;
+        current_node->visited = true;   // necessary for FindNeighbor()
         Q.pop();
         
         if( current_node->distance( *end_node ) == 0 ) {
@@ -250,42 +250,9 @@ void RoutePlanner::Dijkstra() {
                 }
             }
         }
-        
     }
 
     // We've run out of new nodes to explore and haven't found a path.
     std::cout << "No path found!" << "\n";
     return;
 }
-
-// std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath_Dijkstra(RouteModel::Node* current_node) {
-//     // NOTE: current_node should be final node in search (end_node)
-
-//     // Create path_found vector
-//     std::vector<RouteModel::Node> path_found {};
-
-//     // TODO: Implement your solution here.
-//     // 1. iterate through the parents of each node to construct complete path (path_found)
-//     // 2. at each iteration push parent node onto back of path_found and increment distance
-//     // 3. At the end, path_found will be in the reverse order, so it will need to be reversed
-
-//     // add current_node (end_node) to path_found
-//     path_found.push_back( *(current_node) );
-
-//     while( current_node->parent != nullptr ) {
-
-//         // add parent node to path_found vector
-//         path_found.push_back( *(current_node->parent) );
-        
-//         // increment distance by the distance from the current node to its parent node
-//         distance += current_node->distance( *(current_node->parent) );
-
-//         current_node = current_node->parent;
-//     }
-
-//     // reverse the order of nodes in the path
-//     std::reverse(path_found.begin(), path_found.end());
-
-//     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
-//     return path_found;
-// } 

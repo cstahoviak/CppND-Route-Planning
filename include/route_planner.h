@@ -16,7 +16,6 @@ class RoutePlanner {
 
     // added Dijkstra's algorithm
     void Dijkstra();
-    // std::vector<RouteModel::Node> ConstructFinalPath_Dijkstra(RouteModel::Node *);
 
     // The following methods have been made public so we can test them individually.
     void AddNeighbors(RouteModel::Node *current_node);
